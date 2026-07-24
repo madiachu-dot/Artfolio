@@ -1,14 +1,19 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Hi_Melody, Inter } from "next/font/google";
 import { Navbar } from "~/components/navbar";
 import { ThemeProvider } from "./theme-provider";
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
+const hiMelody = Hi_Melody({
+  subsets: ["latin"],
+  weight: "400",
+  variable: "--font-heading",
+});
 
 export const metadata: Metadata = {
-  title: "Lumos App",
-  description: "Built with create-lumos-app",
+  title: "Artfolio",
+  description: "Showcase your art portfolio.",
 };
 
 export default function RootLayout({
@@ -18,7 +23,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={inter.className}>
+      <body className={`${inter.className} ${hiMelody.variable}`}>
         <ThemeProvider>
           <Navbar />
           {children}
