@@ -58,6 +58,7 @@ export default function PortfolioPage() {
   const [isEditing, setIsEditing] = useState(false);
   const [nameDraft, setNameDraft] = useState("");
   const [bioDraft, setBioDraft] = useState("");
+  const [isUploadingPhotos, setIsUploadingPhotos] = useState(false);
   const avatarInputRef = useRef<HTMLInputElement>(null);
   const photoInputRef = useRef<HTMLInputElement>(null);
 
@@ -96,14 +97,19 @@ export default function PortfolioPage() {
     const files = Array.from(e.target.files ?? []);
     e.target.value = "";
     if (files.length === 0) return;
-    const newPhotos = await Promise.all(
-      files.map(async (file) => ({
-        id: crypto.randomUUID(),
-        src: await readFileAsDataUrl(file),
-        caption: "",
-      })),
-    );
-    update({ photos: [...newPhotos, ...profile.photos] });
+    setIsUploadingPhotos(true);
+    try {
+      const newPhotos = await Promise.all(
+        files.map(async (file) => ({
+          id: crypto.randomUUID(),
+          src: await readFileAsDataUrl(file),
+          caption: "",
+        })),
+      );
+      update({ photos: [...newPhotos, ...profile.photos] });
+    } finally {
+      setIsUploadingPhotos(false);
+    }
   }
 
   function removePhoto(id: string) {
@@ -196,7 +202,11 @@ export default function PortfolioPage() {
       <div className="flex flex-col gap-4">
         <div className="flex items-center justify-between">
           <h2 className="font-heading text-2xl tracking-tight">Photos</h2>
-          <Button size="sm" onClick={() => photoInputRef.current?.click()}>
+          <Button
+            size="sm"
+            loading={isUploadingPhotos}
+            onClick={() => photoInputRef.current?.click()}
+          >
             Add Photo
           </Button>
           <input
