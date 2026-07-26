@@ -13,9 +13,17 @@ export default function Home() {
         <h1 className="font-heading text-5xl tracking-tight">
           Showcase your art, beautifully
         </h1>
-        <p className="max-w-md text-lg text-muted-foreground">
-          Artfolio is a home for your creative work — build a portfolio, share
-          it with the world, and let your art speak for itself.
+        <p className="max-w-md font-gaegu text-lg text-muted-foreground">
+          <span className="font-heading text-2xl text-foreground">
+            Art block
+          </span>{" "}
+          is real, and it's not the only thing standing between you and an
+          audience.{" "}
+          <span className="font-heading text-2xl text-foreground">
+            Artfolio
+          </span>{" "}
+          gives your work a home worth visiting, so you can stop tinkering and
+          start sharing.
         </p>
         <Button asChild size="lg">
           <Link href="/portfolio">Go to My Portfolio</Link>

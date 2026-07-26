@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Hi_Melody, Inter } from "next/font/google";
+import { Gaegu, Hi_Melody, Inter } from "next/font/google";
 import { Navbar } from "~/components/navbar";
 import { ThemeProvider } from "./theme-provider";
 import "./globals.css";
@@ -9,6 +9,11 @@ const hiMelody = Hi_Melody({
   subsets: ["latin"],
   weight: "400",
   variable: "--font-heading",
+});
+const gaegu = Gaegu({
+  subsets: ["latin"],
+  weight: "400",
+  variable: "--font-gaegu",
 });
 
 export const metadata: Metadata = {
@@ -23,7 +28,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${inter.className} ${hiMelody.variable}`}>
+      <body
+        className={`${inter.className} ${hiMelody.variable} ${gaegu.variable}`}
+      >
         <ThemeProvider>
           <Navbar />
           {children}
