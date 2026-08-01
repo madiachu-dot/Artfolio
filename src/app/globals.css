@@ -46,6 +46,7 @@
 @theme inline {
   --font-heading: var(--font-heading);
   --font-gaegu: var(--font-gaegu);
+  --font-sunshiney: var(--font-sunshiney);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-muted: var(--muted);

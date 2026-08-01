@@ -9,11 +9,14 @@ export default function Home() {
         <div className="absolute -right-20 top-1/3 size-80 rounded-full bg-accent/40 blur-3xl" />
         <div className="absolute -bottom-32 left-1/4 size-96 rounded-full bg-secondary/50 blur-3xl" />
       </div>
-      <div className="flex flex-col items-center gap-4 text-center">
-        <h1 className="font-heading text-5xl tracking-tight">
-          Showcase your art, beautifully
+      <div className="flex w-full max-w-2xl flex-col gap-6">
+        <p className="font-sunshiney text-2xl text-muted-foreground">
+          For artists tired of tinkering
+        </p>
+        <h1 className="max-w-[14ch] font-heading text-6xl tracking-tight">
+          Showcase your <span className="text-primary">art</span>, beautifully
         </h1>
-        <p className="max-w-md font-gaegu text-lg text-muted-foreground">
+        <p className="max-w-md font-gaegu text-xl text-muted-foreground">
           <span className="font-heading text-2xl text-foreground">
             Art block
           </span>{" "}
@@ -25,9 +28,14 @@ export default function Home() {
           gives your work a home worth visiting, so you can stop tinkering and
           start sharing.
         </p>
-        <Button asChild size="lg">
-          <Link href="/portfolio">Go to My Portfolio</Link>
-        </Button>
+        <div className="mt-4 flex items-center justify-between gap-4">
+          <span className="text-sm text-muted-foreground">
+            Free to start · no credit card
+          </span>
+          <Button asChild size="lg">
+            <Link href="/portfolio">Go to My Portfolio</Link>
+          </Button>
+        </div>
       </div>
     </main>
   );

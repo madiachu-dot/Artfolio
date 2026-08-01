@@ -1,16 +1,19 @@
-"use client";
-
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { cn } from "~/lib/utils";
+import { NavLinks } from "~/components/nav-links";
+import { Button } from "~/components/ui/button";
+import { signOut } from "~/lib/supabase/actions";
+import { createClient } from "~/lib/supabase/server";
 
 const links = [
   { href: "/", label: "Home" },
   { href: "/portfolio", label: "My Portfolio" },
 ];
 
-export function Navbar() {
-  const pathname = usePathname();
+export async function Navbar() {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
   return (
     <nav className="border-b border-border bg-background">
@@ -53,21 +56,19 @@ export function Navbar() {
             </g>
           </svg>
         </Link>
-        <div className="flex gap-4">
-          {links.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className={cn(
-                "text-sm transition-colors hover:text-foreground",
-                pathname === link.href
-                  ? "text-foreground"
-                  : "text-muted-foreground",
-              )}
-            >
-              {link.label}
-            </Link>
-          ))}
+        <NavLinks links={links} />
+        <div className="ml-auto">
+          {user ? (
+            <form action={signOut}>
+              <Button type="submit" size="sm" variant="ghost">
+                Sign out
+              </Button>
+            </form>
+          ) : (
+            <Button asChild size="sm" variant="outline">
+              <Link href="/login">Log in</Link>
+            </Button>
+          )}
         </div>
       </div>
     </nav>
