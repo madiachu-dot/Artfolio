@@ -17,14 +17,14 @@ export async function Navbar() {
 
   return (
     <nav className="border-b border-border bg-background">
-      <div className="mx-auto flex h-14 max-w-3xl items-center gap-6 px-4">
+      <div className="flex h-14 items-center gap-3 px-4 sm:gap-6 md:pl-8">
         <Link
           href="/"
-          className="flex items-center gap-0 font-heading text-3xl tracking-wide text-primary"
+          className="flex shrink-0 items-center gap-0 font-heading text-2xl tracking-wide text-primary sm:text-3xl"
         >
           <svg
             viewBox="0 5 13 11"
-            className="size-7 shrink-0 -mr-0.5"
+            className="size-6 shrink-0 -mr-0.5 sm:size-7"
             aria-hidden="true"
           >
             <title>Left wing</title>
