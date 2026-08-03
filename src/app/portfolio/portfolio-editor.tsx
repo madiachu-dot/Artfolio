@@ -3,6 +3,9 @@
 import { useRef, useState, useTransition } from "react";
 import {
   deletePhoto,
+  reorderPhotos,
+  resizePhoto,
+  updatePhotoCaption,
   updateProfile,
   uploadAvatar,
   uploadPhotos,
@@ -31,6 +34,9 @@ export function PortfolioEditor({ profile, photos }: PortfolioEditorProps) {
   const [, startAvatarUpload] = useTransition();
   const [isUploadingPhotos, startPhotosUpload] = useTransition();
   const [, startDelete] = useTransition();
+  const [isSavingCaption, startSaveCaption] = useTransition();
+  const [, startReorder] = useTransition();
+  const [, startResize] = useTransition();
 
   const avatarInputRef = useRef<HTMLInputElement>(null);
   const photoInputRef = useRef<HTMLInputElement>(null);
@@ -79,6 +85,24 @@ export function PortfolioEditor({ profile, photos }: PortfolioEditorProps) {
     });
   }
 
+  function onUpdateCaption(id: string, caption: string) {
+    startSaveCaption(async () => {
+      await updatePhotoCaption(id, caption);
+    });
+  }
+
+  function onReorderPhotos(orderedIds: string[]) {
+    startReorder(async () => {
+      await reorderPhotos(orderedIds);
+    });
+  }
+
+  function onResizePhoto(id: string, width: number, height: number) {
+    startResize(async () => {
+      await resizePhoto(id, width, height);
+    });
+  }
+
   return (
     <>
       <ProfileGallery
@@ -89,6 +113,10 @@ export function PortfolioEditor({ profile, photos }: PortfolioEditorProps) {
         onAddPhotosClick={() => photoInputRef.current?.click()}
         isUploadingPhotos={isUploadingPhotos}
         onDeletePhoto={onDeletePhoto}
+        onUpdateCaption={onUpdateCaption}
+        isSavingCaption={isSavingCaption}
+        onReorderPhotos={onReorderPhotos}
+        onResizePhoto={onResizePhoto}
         headerActions={
           <Button size="sm" variant="outline" onClick={startEditing}>
             Edit profile

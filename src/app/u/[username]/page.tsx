@@ -16,10 +16,10 @@ export default async function PublicPortfolioPage({
   const { data: profile } = await supabase
     .from("profiles")
     .select(
-      "name, bio, avatar_path, photos(id, storage_path, caption, created_at)",
+      "name, bio, avatar_path, photos(id, storage_path, caption, position, width, height, created_at)",
     )
     .eq("username", username.toLowerCase())
-    .order("created_at", { referencedTable: "photos", ascending: false })
+    .order("position", { referencedTable: "photos", ascending: true })
     .single();
 
   if (!profile) {
@@ -31,11 +31,15 @@ export default async function PublicPortfolioPage({
       id: string;
       storage_path: string;
       caption: string;
+      width: number;
+      height: number;
     }>
   ).map((photo) => ({
     id: photo.id,
     url: getPublicPhotoUrl(photo.storage_path),
     caption: photo.caption,
+    width: photo.width,
+    height: photo.height,
   }));
 
   return (

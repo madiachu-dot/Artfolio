@@ -6,6 +6,8 @@ import { createClient } from "~/lib/supabase/server";
 
 const links = [
   { href: "/", label: "Home" },
+  { href: "/discover", label: "Discover" },
+  { href: "/daily-challenges", label: "Prompts" },
   { href: "/portfolio", label: "My Portfolio" },
 ];
 

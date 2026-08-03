@@ -62,6 +62,14 @@ export async function uploadPhotos(formData: FormData) {
     .filter((entry): entry is File => entry instanceof File && entry.size > 0);
   if (files.length === 0) return;
 
+  const { data: existing } = await supabase
+    .from("photos")
+    .select("position")
+    .eq("profile_id", user.id)
+    .order("position", { ascending: false })
+    .limit(1);
+  let nextPosition = (existing?.[0]?.position ?? -1) + 1;
+
   for (const file of files) {
     const path = `${user.id}/${crypto.randomUUID()}.${extensionFor(file)}`;
     const { error: uploadError } = await supabase.storage
@@ -69,11 +77,78 @@ export async function uploadPhotos(formData: FormData) {
       .upload(path, file);
     if (uploadError) throw new Error(uploadError.message);
 
-    const { error } = await supabase
-      .from("photos")
-      .insert({ profile_id: user.id, storage_path: path });
+    const { error } = await supabase.from("photos").insert({
+      profile_id: user.id,
+      storage_path: path,
+      position: nextPosition,
+    });
     if (error) throw new Error(error.message);
+    nextPosition += 1;
   }
+
+  revalidatePath("/portfolio");
+}
+
+export async function reorderPhotos(orderedIds: string[]) {
+  const { supabase, user } = await requireUser();
+
+  await Promise.all(
+    orderedIds.map((id, index) =>
+      supabase
+        .from("photos")
+        .update({ position: index })
+        .eq("id", id)
+        .eq("profile_id", user.id),
+    ),
+  );
+
+  revalidatePath("/portfolio");
+}
+
+export async function resizePhoto(
+  photoId: string,
+  width: number,
+  height: number,
+) {
+  const { supabase, user } = await requireUser();
+
+  const { error } = await supabase
+    .from("photos")
+    .update({
+      width: clamp(width, 1, 3),
+      height: clamp(height, 1, 3),
+    })
+    .eq("id", photoId)
+    .eq("profile_id", user.id);
+  if (error) throw new Error(error.message);
+
+  revalidatePath("/portfolio");
+}
+
+function clamp(value: number, min: number, max: number) {
+  return Math.min(max, Math.max(min, value));
+}
+
+export async function updatePhotoCaption(photoId: string, caption: string) {
+  const { supabase, user } = await requireUser();
+
+  const { data: photo, error: fetchError } = await supabase
+    .from("photos")
+    .select("profile_id")
+    .eq("id", photoId)
+    .single();
+  if (fetchError || !photo) {
+    throw new Error(fetchError?.message ?? "Photo not found");
+  }
+  if (photo.profile_id !== user.id) {
+    throw new Error("Not your photo");
+  }
+
+  const { error } = await supabase
+    .from("photos")
+    .update({ caption: caption.trim() })
+    .eq("id", photoId);
+  if (error) throw new Error(error.message);
 
   revalidatePath("/portfolio");
 }
