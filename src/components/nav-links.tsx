@@ -12,13 +12,13 @@ export function NavLinks({
   const pathname = usePathname();
 
   return (
-    <div className="flex gap-4">
+    <div className="flex gap-3 sm:gap-4">
       {links.map((link) => (
         <Link
           key={link.href}
           href={link.href}
           className={cn(
-            "text-sm transition-colors hover:text-foreground",
+            "text-sm whitespace-nowrap transition-colors hover:text-foreground",
             pathname === link.href
               ? "text-foreground"
               : "text-muted-foreground",

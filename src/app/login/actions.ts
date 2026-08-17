@@ -1,21 +1,13 @@
 "use server";
 
+import { headers } from "next/headers";
 import { redirect } from "next/navigation";
-import { z } from "zod";
 import { createClient } from "~/lib/supabase/server";
+import { usernameSchema } from "~/lib/username";
 
 export interface AuthActionState {
   error?: string;
 }
-
-const usernameSchema = z
-  .string()
-  .trim()
-  .toLowerCase()
-  .regex(
-    /^[a-z0-9_-]{3,30}$/,
-    "Use 3-30 characters: lowercase letters, numbers, - or _",
-  );
 
 export async function signIn(
   _prevState: AuthActionState,
@@ -52,11 +44,29 @@ export async function signUp(
   const username = usernameResult.data;
 
   const supabase = await createClient();
-  const { data, error } = await supabase.auth.signUp({ email, password });
+  const headersList = await headers();
+  const origin =
+    headersList.get("origin") ?? `https://${headersList.get("host")}`;
+
+  const { data, error } = await supabase.auth.signUp({
+    email,
+    password,
+    options: {
+      data: { username },
+      emailRedirectTo: `${origin}/auth/callback`,
+    },
+  });
   if (error) {
     return { error: error.message };
   }
   if (!data.user) {
+    return { error: "Check your email to confirm your account, then sign in." };
+  }
+
+  if (!data.session) {
+    // Email confirmation is required: no session yet, so RLS would reject a
+    // profile insert now. The profile is created from the stored username
+    // metadata once the user confirms, in the auth callback route.
     return { error: "Check your email to confirm your account, then sign in." };
   }
 
@@ -72,4 +82,22 @@ export async function signUp(
   }
 
   redirect("/portfolio");
+}
+
+export async function signInWithGoogle() {
+  const supabase = await createClient();
+  const headersList = await headers();
+  const origin =
+    headersList.get("origin") ?? `https://${headersList.get("host")}`;
+
+  const { data, error } = await supabase.auth.signInWithOAuth({
+    provider: "google",
+    options: { redirectTo: `${origin}/auth/callback` },
+  });
+
+  if (error || !data.url) {
+    redirect("/login?error=oauth");
+  }
+
+  redirect(data.url);
 }

@@ -3,7 +3,7 @@
 :root {
   /* OKLCH Design Tokens — Light Mode Default (earthy green & brown) */
   --background: oklch(0.98 0.008 95);
-  --foreground: oklch(0.28 0.03 55);
+  --foreground: oklch(0.34 0.03 55);
   --muted: oklch(0.94 0.016 85);
   --muted-foreground: oklch(0.5 0.03 60);
   --card: oklch(0.99 0.006 90);
@@ -12,7 +12,7 @@
   --popover-foreground: oklch(0.28 0.03 55);
   --border: oklch(0.87 0.02 75);
   --input: oklch(0.87 0.02 75);
-  --primary: oklch(0.42 0.07 145);
+  --primary: oklch(0.48 0.1 145);
   --primary-foreground: oklch(0.98 0.01 95);
   --secondary: oklch(0.91 0.025 125);
   --secondary-foreground: oklch(0.3 0.03 100);
