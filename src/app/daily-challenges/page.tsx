@@ -1,4 +1,14 @@
-export default function DailyChallengesPage() {
+import {
+  generateArtPrompt,
+  refreshPrompt,
+} from "~/app/daily-challenges/actions";
+import { Button } from "~/components/ui/button";
+
+export const dynamic = "force-dynamic";
+
+export default async function DailyChallengesPage() {
+  const prompt = await generateArtPrompt();
+
   return (
     <div className="mx-auto flex min-h-[calc(100vh-3.5rem)] max-w-3xl flex-col gap-8 p-6">
       <div className="flex flex-col gap-2">
@@ -8,8 +18,13 @@ export default function DailyChallengesPage() {
         </p>
       </div>
 
-      <div className="flex flex-1 items-center justify-center rounded-lg border border-dashed border-border p-12 text-sm text-muted-foreground">
-        Coming soon.
+      <div className="flex flex-1 flex-col items-center justify-center gap-6 rounded-lg border border-dashed border-border p-12 text-center">
+        <p className="font-heading text-2xl tracking-tight">{prompt}</p>
+        <form action={refreshPrompt}>
+          <Button type="submit" variant="outline">
+            New Prompt
+          </Button>
+        </form>
       </div>
     </div>
   );
