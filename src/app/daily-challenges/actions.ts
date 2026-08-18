@@ -34,7 +34,8 @@ export async function generateArtPrompt(): Promise<string> {
     return textBlock?.type === "text"
       ? textBlock.text.trim()
       : "Paint something that reminds you of home.";
-  } catch {
+  } catch (error) {
+    console.error("generateArtPrompt failed:", error);
     return "Couldn't reach the prompt generator — try again in a moment.";
   }
 }
