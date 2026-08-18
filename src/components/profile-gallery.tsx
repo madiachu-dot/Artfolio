@@ -3,6 +3,12 @@
 import Image from "next/image";
 import { type ReactNode, useEffect, useRef, useState } from "react";
 import { Button } from "~/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogTitle,
+} from "~/components/ui/dialog";
 import { Textarea } from "~/components/ui/textarea";
 
 function DragHandleIcon() {
@@ -82,6 +88,7 @@ export function ProfileGallery({
   } | null>(null);
   const [orderedPhotos, setOrderedPhotos] = useState(photos);
   const [draggingId, setDraggingId] = useState<string | null>(null);
+  const [expandedPhoto, setExpandedPhoto] = useState<GalleryPhoto | null>(null);
   const tileRefs = useRef<Record<string, HTMLDivElement | null>>({});
   const dragStartRef = useRef<{
     x: number;
@@ -339,6 +346,15 @@ export function ProfileGallery({
                         </p>
                       )}
 
+                      {!editable && (
+                        <button
+                          type="button"
+                          onClick={() => setExpandedPhoto(photo)}
+                          className="absolute inset-0 cursor-zoom-in"
+                          aria-label={`View ${photo.caption || "photo"} full size`}
+                        />
+                      )}
+
                       {editable && (
                         <>
                           <button
@@ -347,6 +363,13 @@ export function ProfileGallery({
                             className="absolute inset-0 flex items-center justify-center bg-black/50 text-xs text-white opacity-0 transition-opacity group-hover:opacity-100"
                           >
                             Edit description
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setExpandedPhoto(photo)}
+                            className="absolute bottom-1.5 left-1.5 rounded-full bg-black/60 px-2 py-1 text-xs text-white opacity-0 transition-opacity group-hover:opacity-100"
+                          >
+                            View
                           </button>
                           <button
                             type="button"
@@ -385,6 +408,36 @@ export function ProfileGallery({
           </div>
         )}
       </div>
+
+      <Dialog
+        open={!!expandedPhoto}
+        onOpenChange={(open) => !open && setExpandedPhoto(null)}
+      >
+        <DialogContent className="max-w-3xl">
+          {expandedPhoto && (
+            <>
+              <DialogTitle className="sr-only">
+                {expandedPhoto.caption || "Portfolio piece"}
+              </DialogTitle>
+              <div className="relative aspect-[4/3] w-full overflow-hidden rounded-md bg-black">
+                <Image
+                  src={expandedPhoto.url}
+                  alt={expandedPhoto.caption || "Portfolio piece"}
+                  fill
+                  sizes="90vw"
+                  unoptimized
+                  className="object-contain"
+                />
+              </div>
+              <DialogDescription
+                className={expandedPhoto.caption ? undefined : "sr-only"}
+              >
+                {expandedPhoto.caption || "Portfolio piece"}
+              </DialogDescription>
+            </>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
